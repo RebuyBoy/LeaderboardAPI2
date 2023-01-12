@@ -1,4 +1,4 @@
-package com.rebuy.service.controllers;
+package com.rebuy.service.controller;
 
 import com.rebuy.service.exceptions.AesException;
 import com.rebuy.service.exceptions.NoResultException;

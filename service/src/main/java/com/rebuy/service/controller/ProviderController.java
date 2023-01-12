@@ -1,4 +1,4 @@
-package com.rebuy.service.controllers;
+package com.rebuy.service.controller;
 
 import com.rebuy.service.dto.api.response.ProviderDataResponse;
 import com.rebuy.service.dto.api.response.ProviderResponse;

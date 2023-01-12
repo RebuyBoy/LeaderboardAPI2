@@ -1,12 +1,12 @@
-package com.rebuy.service.dto.api;
+package com.rebuy.api.scope.dto.response;
 
 import java.math.BigDecimal;
 
-public class ResultTelegram {
+public class ResultResponse {
     private String name;
     private BigDecimal points;
 
-    public ResultTelegram(String name, BigDecimal points) {
+    public ResultResponse(String name, BigDecimal points) {
         this.name = name;
         this.points = points;
     }

@@ -1,7 +1,9 @@
-package com.rebuy.service.controllers;
+package com.rebuy.service.controller;
 
-import com.rebuy.service.dto.api.ResultTelegram;
-import com.rebuy.service.dto.api.response.ResultResponse;
+import com.rebuy.api.scope.LeaderboardApi;
+import com.rebuy.api.scope.dto.request.StakeRequest;
+import com.rebuy.api.scope.dto.response.ResultResponse;
+import com.rebuy.service.converters.StakeConverter;
 import com.rebuy.service.entity.GameType;
 import com.rebuy.service.entity.Provider;
 import com.rebuy.service.entity.Stake;
@@ -25,7 +27,7 @@ import java.util.Objects;
 @RequestMapping("v1/results")
 @Tag(name = "AggregateResultController")
 @CrossOrigin()
-public class AggregatedResultController implements BaseController {
+public class AggregatedResultController implements BaseController, LeaderboardApi {
 
     private final AggregateService aggregateService;
     private final ClientService clientService;
@@ -38,20 +40,20 @@ public class AggregatedResultController implements BaseController {
 
     @GetMapping("/stake")
     @Operation(summary = "get last year results by provider, gameType and stake if passed")
-    public ResultResponse getAllByStake(@RequestParam Provider provider,
-                                        @RequestParam GameType gameType,
-                                        @RequestParam(required = false) Stake stake) {
+    public com.rebuy.service.dto.api.response.ResultResponse getAllByStake(@RequestParam Provider provider,
+                                                                           @RequestParam GameType gameType,
+                                                                           @RequestParam(required = false) Stake stake) {
         return aggregateService.getAllByStake(provider, gameType, stake);
     }
 
     @GetMapping("/date")
     @Operation(summary = "get results by date from start to end if passed or current date if not, by stake or last year if stake not passed")
     @Parameter(example = "start(yyyy-MM-dd): 2022-09-05, end : 2022-09-05")
-    public ResultResponse getAllByDate(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate start,
-                                       @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate end,
-                                       @RequestParam Provider provider,
-                                       @RequestParam GameType gameType,
-                                       @RequestParam(required = false) Stake stake) {
+    public com.rebuy.service.dto.api.response.ResultResponse getAllByDate(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate start,
+                                                                          @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate end,
+                                                                          @RequestParam Provider provider,
+                                                                          @RequestParam GameType gameType,
+                                                                          @RequestParam(required = false) Stake stake) {
 
         return aggregateService.getAllByDate(start, end, provider, gameType, stake);
     }
@@ -66,12 +68,12 @@ public class AggregatedResultController implements BaseController {
         if (Objects.isNull(end)) {
             end = LocalDate.now();
         }
-        clientService.runDailyDataFlow(start.datesUntil(end).toList(),gameType);
+        clientService.runDailyDataFlow(start.datesUntil(end).toList(), gameType);
     }
-    @GetMapping("/parseStake")
-    @Operation(summary = "parse current results by stake")
-    public List<ResultTelegram> parseCurrentDataByStake(@RequestParam Stake stake) {
-        return clientService.runDailyDataFlow(stake,GameType.SHORT_DECK);
+
+    @Override
+    public List<ResultResponse> parseCurrentDataByStake(StakeRequest stake) {
+        return clientService.runDailyDataFlow(StakeConverter.toStake(stake), GameType.SHORT_DECK);
     }
 
 }

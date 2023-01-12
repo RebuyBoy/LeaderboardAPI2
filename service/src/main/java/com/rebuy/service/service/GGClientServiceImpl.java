@@ -1,7 +1,7 @@
 package com.rebuy.service.service;
 
 import com.rebuy.service.converters.ResultResponseConverter;
-import com.rebuy.service.dto.api.ResultTelegram;
+import com.rebuy.api.scope.dto.response.ResultResponse;
 import com.rebuy.service.dto.client.gg.GGResultResponse;
 import com.rebuy.service.dto.client.gg.GroupsResponse;
 import com.rebuy.service.dto.client.gg.SetsResponse;
@@ -84,7 +84,7 @@ public class GGClientServiceImpl implements ClientService {
         }
     }
 
-    public List<ResultTelegram> runDailyDataFlow(Stake stake, GameType gameType) {
+    public List<ResultResponse> runDailyDataFlow(Stake stake, GameType gameType) {
         LOG.info("Parsing data by stake {} is started", stake);
         LocalDate currentDate = daysBeforeNow(0);
         GroupsResponse groupsResponse = verifyGroupResponse(currentDate, gameType);
@@ -99,7 +99,7 @@ public class GGClientServiceImpl implements ClientService {
         }
         return getGGResultDTOS(gameType, promotionId, stake.getDescription())
                 .stream()
-                .map(result -> new ResultTelegram(result.getName(), result.getPoints()))
+                .map(result -> new ResultResponse(result.getName(), result.getPoints()))
                 .toList();
 
     }
