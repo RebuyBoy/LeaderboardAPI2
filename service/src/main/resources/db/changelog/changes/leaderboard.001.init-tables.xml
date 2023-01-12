@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="leaderboard.001.init-tables" author="Sergey M">
+        <createTable tableName="leaderboard_date">
+            <column name="id" type="int">
+                <constraints primaryKey="true" primaryKeyName="pk_leaderboard_date"/>
+            </column>
+            <column name="date" type="date">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="stake">
+            <column name="id" type="int">
+                <constraints primaryKey="true" primaryKeyName="pk_stake"/>
+            </column>
+            <column name="stake_equivalent" type="decimal">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="player">
+            <column name="id" type="int">
+                <constraints primaryKey="true" primaryKeyName="pk_player"/>
+            </column>
+            <column name="name" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="country_code" type="varchar(5)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="country">
+            <column name="code" type="varchar(5)">
+                <constraints primaryKey="true" primaryKeyName="pk_country"/>
+            </column>
+            <column name="name" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="result">
+            <column name="id" type="int">
+                <constraints primaryKey="true" primaryKeyName="pk_result"/>
+            </column>
+            <column name="player_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="stake_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="rank" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="prize" type="decimal">
+                <constraints nullable="false"/>
+            </column>
+            <column name="point" type="decimal">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseColumnNames="player_id"
+                baseTableName="result"
+                constraintName="fk_result_player_id"
+                referencedColumnNames="id"
+                referencedTableName="player"
+                validate="true"/>
+
+        <addForeignKeyConstraint
+                baseColumnNames="stake_id"
+                baseTableName="result"
+                constraintName="fk_result_stake_id"
+                referencedColumnNames="id"
+                referencedTableName="stake"
+                validate="true"/>
+
+        <addForeignKeyConstraint
+                baseColumnNames="country_code"
+                baseTableName="player"
+                constraintName="fk_player_country_code"
+                referencedColumnNames="code"
+                referencedTableName="country"
+                validate="true"/>
+
+        <addForeignKeyConstraint
+                baseColumnNames="date_id"
+                baseTableName="result"
+                constraintName="fk_result_pk_leaderboard_date_id"
+                referencedColumnNames="id"
+                referencedTableName="leaderboard_date"
+                validate="true"/>
+
+        <createSequence
+                sequenceName="result_sq"
+                incrementBy="1"
+                minValue="1"
+                startValue="1"
+                cycle="false"/>
+
+        <createSequence
+                sequenceName="date_sq"
+                incrementBy="1"
+                minValue="1"
+                startValue="1"
+                cycle="false"/>
+
+        <createSequence
+                sequenceName="player_sq"
+                incrementBy="1"
+                minValue="1"
+                startValue="1"
+                cycle="false"/>
+
+        <createSequence
+                sequenceName="stake_sq"
+                incrementBy="1"
+                minValue="1"
+                startValue="1"
+                cycle="false"/>
+
+    </changeSet>
+</databaseChangeLog>
