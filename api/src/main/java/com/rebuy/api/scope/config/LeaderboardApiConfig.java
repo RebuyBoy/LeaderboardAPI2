@@ -5,7 +5,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@EnableFeignClients("com.rebuy.api.scope.feignclient")
+@EnableFeignClients(basePackages = {"com.rebuy.api.scope"})
 @ComponentScan({"com.rebuy.api.scope"})
 public class LeaderboardApiConfig {
 }

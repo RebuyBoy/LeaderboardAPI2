@@ -12,6 +12,7 @@ import com.rebuy.service.service.interfaces.ClientService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -27,6 +29,7 @@ import java.util.Objects;
 @RequestMapping("v1/results")
 @Tag(name = "AggregateResultController")
 @CrossOrigin()
+@Slf4j
 public class AggregatedResultController implements BaseController, LeaderboardApi {
 
     private final AggregateService aggregateService;
@@ -72,7 +75,9 @@ public class AggregatedResultController implements BaseController, LeaderboardAp
     }
 
     @Override
+    @GetMapping("/parseStake")
     public List<ResultResponse> parseCurrentDataByStake(StakeRequest stake) {
+        log.info("request to /parseStake with stake param " + stake.name());
         return clientService.runDailyDataFlow(StakeConverter.toStake(stake), GameType.SHORT_DECK);
     }
 

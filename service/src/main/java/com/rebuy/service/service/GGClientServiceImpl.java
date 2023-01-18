@@ -66,7 +66,7 @@ public class GGClientServiceImpl implements ClientService {
     @Override
     public void runDailyDataFlow(LocalDate date, GameType gameType) {
         GroupsResponse groupsResponse = verifyGroupResponse(date, gameType);
-        //TODO check date to be past one day from current
+        //TODO check date to be past one day from current  !!!!Do not for bot
         try {
             LOG.info("Parsing data is started by date: {} and gameType: {}", date, gameType);
             SetsResponse sets = findSetByDate(groupsResponse, date);
@@ -99,9 +99,8 @@ public class GGClientServiceImpl implements ClientService {
         }
         return getGGResultDTOS(gameType, promotionId, stake.getDescription())
                 .stream()
-                .map(result -> new ResultResponse(result.getName(), result.getPoints()))
+                .map(result -> new ResultResponse(result.getName(), result.getPoints(), result.getRank(), result.getPrize()))
                 .toList();
-
     }
 
 

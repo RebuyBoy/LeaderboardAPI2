@@ -22,7 +22,7 @@ public class GGClientGGMonthlyDataServiceImpl implements GGMonthlyDataService {
     private static final Logger LOG = LoggerFactory.getLogger(GGClientGGMonthlyDataServiceImpl.class);
     private static final String GROUP_ID_REGEX = "groupId=(\\d+)";
     //TODO change link to GLOBAL
-    private static final String GGN_BASE_PROMO_FORMAT = "https://play.pokerok900.com/promotions/promo-%s";
+    private static final String GGN_BASE_PROMO_FORMAT = "https://play.pokerok136.com/promotions/promo-%s";
     private static final String GGN_GROUP_ID_REQUEST_FORMAT = "https://pml.good-game-network.com/lapi/leaderboard/groups/%s";
 
 
@@ -42,15 +42,16 @@ public class GGClientGGMonthlyDataServiceImpl implements GGMonthlyDataService {
     public GroupsResponse parseMonthlyData(GameType gameType) {
         LOG.info("Started parsing monthly data by game type: {}", gameType);
         GroupsResponse groupsResponse = null;
-        String groupUrl = generateMainPromoUrl(gameType);
+        String mainPromoUrl = generateMainPromoUrl(gameType);
         try {
-            LOG.debug("Update monthly data started with url: {}", groupUrl);
-            String groupId = findGroupIdFromResponse(requestService.getHTMLBody(groupUrl));
+            LOG.debug("request promo url: {}", mainPromoUrl);
+            String groupId = findGroupIdFromResponse(requestService.getHTMLBody(mainPromoUrl));
             String urlWithGroupId = generateGroupIdUrl(groupId);
             groupIdService.saveIfNotExists(buildGroupId(gameType, groupId));
+            LOG.debug("request group id: {}", urlWithGroupId);
             groupsResponse = requestService.groupIdRequest(urlWithGroupId);
         } catch (Exception e) {
-            LOG.error("Parsing monthly data failed ", e);
+            LOG.error("Parsing monthly data failed {}", e.getMessage());
         }
         return groupsResponse;
     }
