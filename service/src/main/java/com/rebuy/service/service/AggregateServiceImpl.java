@@ -1,13 +1,9 @@
 package com.rebuy.service.service;
 
-import com.rebuy.service.constants.Constants;
 import com.rebuy.service.dto.api.AggregatedResult;
 import com.rebuy.service.dto.api.response.PlayerResponse;
-import com.rebuy.service.dto.api.response.ProviderResponse;
 import com.rebuy.service.dto.api.response.ResultResponse;
-import com.rebuy.service.entity.GameType;
 import com.rebuy.service.entity.Player;
-import com.rebuy.service.entity.Provider;
 import com.rebuy.service.entity.Result;
 import com.rebuy.service.entity.Stake;
 import com.rebuy.service.service.interfaces.AggregateService;
@@ -29,20 +25,20 @@ public class AggregateServiceImpl implements AggregateService {
         this.resultService = resultService;
     }
 
-    @Override
-    public ResultResponse getAllByStake(Provider provider, GameType gameType, Stake stake) {
-        List<AggregatedResult> aggregate = aggregate(resultService.getAllByStake(provider, gameType, stake));
-        return new ResultResponse(new ProviderResponse(provider.name(), provider.getDescription(), provider.getCurrency()), aggregate);
-    }
-
-    @Override
-    public ResultResponse getAllByDate(LocalDate start, LocalDate end, Provider provider, GameType gameType, Stake stake) {
-        if (end == null) {
-            end = LocalDate.now((ZoneId.of(Constants.GMT_MINUS_8)));
-        }
-        List<AggregatedResult> aggregatedResultsByDateBetween = aggregate(resultService.getAllByDate(start, end, provider, gameType, stake));
-        return new ResultResponse(new ProviderResponse(provider.name(), provider.getDescription(), provider.getCurrency()), aggregatedResultsByDateBetween);
-    }
+//    @Override
+//    public ResultResponse getAllByStake(Provider provider, GameType gameType, Stake stake) {
+//        List<AggregatedResult> aggregate = aggregate(resultService.getAllByStake(provider, gameType, stake));
+//        return new ResultResponse(new ProviderResponse(provider.name(), provider.getDescription(), provider.getCurrency()), aggregate);
+//    }
+//
+//    @Override
+//    public ResultResponse getAllByDate(LocalDate start, LocalDate end, Provider provider, GameType gameType, Stake stake) {
+//        if (end == null) {
+//            end = LocalDate.now((ZoneId.of(Constants.GMT_MINUS_8)));
+//        }
+//        List<AggregatedResult> aggregatedResultsByDateBetween = aggregate(resultService.getAllByDate(start, end, provider, gameType, stake));
+//        return new ResultResponse(new ProviderResponse(provider.name(), provider.getDescription(), provider.getCurrency()), aggregatedResultsByDateBetween);
+//    }
 
     private List<AggregatedResult> aggregate(List<Result> results) {
         Map<Player, AggregatedResult> playerAggregatedResult = new HashMap<>();
@@ -78,4 +74,9 @@ public class AggregateServiceImpl implements AggregateService {
                 .build();
     }
 
+    @Override
+    public List<AggregatedResult> getResults(LocalDate from, LocalDate to, Stake stake) {
+        return aggregate(resultService.get(from, to, stake));
+//    }
+    }
 }

@@ -26,10 +26,9 @@ public class GGGroupIdService implements GroupIdService {
 
     @Override
     public Optional<GroupId> getByGroupId(GroupId groupId) {
-        return groupIdRepository.getByDateAndPromotionGroupIdAndGameType(
+        return groupIdRepository.getByDateAndPromotionGroupId(
                 groupId.getDate(),
-                groupId.getPromotionGroupId(),
-                groupId.getGameType());
+                groupId.getPromotionGroupId());
     }
 
 }

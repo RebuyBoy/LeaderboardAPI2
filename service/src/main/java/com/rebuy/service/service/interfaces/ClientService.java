@@ -1,7 +1,6 @@
 package com.rebuy.service.service.interfaces;
 
-import com.rebuy.api.scope.dto.response.ResultResponse;
-import com.rebuy.service.entity.GameType;
+import com.rebuy.service.dto.api.response.ResultResponse;
 import com.rebuy.service.entity.Stake;
 
 import java.time.LocalDate;
@@ -9,11 +8,6 @@ import java.util.List;
 
 public interface ClientService {
 
-    void runDailyDataFlow(List<LocalDate> dates, GameType gameType);
+    List<ResultResponse> parseResults(LocalDate date, Stake stake, boolean saveToDB);
 
-    void runDailyDataFlow();
-
-    void runDailyDataFlow(LocalDate date,GameType gameType);
-
-    List<ResultResponse> runDailyDataFlow(Stake stake, GameType gameType);
 }

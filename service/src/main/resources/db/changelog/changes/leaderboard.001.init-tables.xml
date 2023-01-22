@@ -64,7 +64,7 @@
             <column name="prize" type="decimal">
                 <constraints nullable="false"/>
             </column>
-            <column name="point" type="decimal">
+            <column name="points" type="decimal">
                 <constraints nullable="false"/>
             </column>
         </createTable>

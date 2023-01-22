@@ -8,49 +8,36 @@ public class ResultResponse {
     private BigDecimal points;
     private int rank;
     private BigDecimal prize;
-    //TODO builder
 
     public ResultResponse() {
     }
 
-    public ResultResponse(String name, BigDecimal points, int rank, BigDecimal prize) {
-        this.name = name;
-        this.points = points;
-        this.rank = rank;
-        this.prize = prize;
+    private ResultResponse(Builder builder) {
+        this.name = builder.name;
+        this.points = builder.points;
+        this.rank = builder.rank;
+        this.prize = builder.prize;
     }
 
     public int getRank() {
         return rank;
     }
 
-    public void setRank(int rank) {
-        this.rank = rank;
-    }
 
     public BigDecimal getPrize() {
         return prize;
     }
 
-    public void setPrize(BigDecimal prize) {
-        this.prize = prize;
-    }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public BigDecimal getPoints() {
         return points;
     }
 
-    public void setPoints(BigDecimal points) {
-        this.points = points;
-    }
 
     @Override
     public String toString() {
@@ -73,5 +60,36 @@ public class ResultResponse {
     @Override
     public int hashCode() {
         return Objects.hash(getName(), getPoints(), getRank(), getPrize());
+    }
+
+    public static class Builder {
+        private String name;
+        private BigDecimal points;
+        private int rank;
+        private BigDecimal prize;
+
+        public Builder name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder points(BigDecimal points) {
+            this.points = points;
+            return this;
+        }
+
+        public Builder rank(int rank) {
+            this.rank = rank;
+            return this;
+        }
+
+        public Builder prize(BigDecimal prize) {
+            this.prize = prize;
+            return this;
+        }
+
+        public ResultResponse build() {
+            return new ResultResponse(this);
+        }
     }
 }

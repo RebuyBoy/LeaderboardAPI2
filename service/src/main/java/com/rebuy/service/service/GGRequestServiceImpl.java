@@ -37,7 +37,7 @@ public class GGRequestServiceImpl implements GGRequestService {
             String decrypt = Aes.decrypt(secret, promotionIdResponse.getBody().getData());
             return mapper.readValue(decrypt, new TypeReference<>() {
             });
-        } catch (JsonProcessingException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         throw new NoResultException("Request failed url: " + url);

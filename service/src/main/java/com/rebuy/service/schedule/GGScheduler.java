@@ -17,11 +17,11 @@ public class GGScheduler {
         this.clientService = clientService;
     }
 
-    @Scheduled(cron = EVERY_DAY_PLUS_3_MINUTES_AFTER_MIDNIGHT_CRON, zone = Constants.GMT_MINUS_8)
-    public void dailyPromotionData() {
-        LOG.info("scheduler starts collecting data");
-        clientService.runDailyDataFlow();
-    }
+//    @Scheduled(cron = EVERY_DAY_PLUS_3_MINUTES_AFTER_MIDNIGHT_CRON, zone = Constants.GMT_MINUS_8)
+//    public void dailyPromotionData() {
+//        LOG.info("scheduler starts collecting data");
+//        clientService.runDailyDataFlow();
+//    }
     //TODO random start time
     // check current cron
     // delay between requests?

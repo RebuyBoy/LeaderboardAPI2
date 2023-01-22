@@ -1,9 +1,7 @@
 package com.rebuy.service.service;
 
 import com.rebuy.service.entity.DateLB;
-import com.rebuy.service.entity.GameType;
 import com.rebuy.service.entity.Player;
-import com.rebuy.service.entity.Provider;
 import com.rebuy.service.entity.Result;
 import com.rebuy.service.entity.Stake;
 import com.rebuy.service.repository.ResultRepository;
@@ -31,28 +29,34 @@ public class ResultServiceImpl implements ResultService {
         this.dateService = dateService;
     }
 
-    @Override
-    public List<Result> getByDateFrom(LocalDate from) {
-        return List.of();
-    }
 
     @Override
-    public List<Result> getByDateBetween(LocalDate from, LocalDate to) {
-        return List.of();
+    public List<Result> get(LocalDate from, LocalDate to, Stake stake) {
+        return resultRepository.getResults(from, to, stake);
     }
 
-    @Override
-    public List<Result> getAllByStake(Provider provider, GameType gameType, Stake stake) {
-        return resultRepository.getResultsByProviderAndGameTypeAndStake(provider, gameType, stake);
-    }
+//    @Override
+//    public List<Result> getByDateFrom(LocalDate from) {
+//        return List.of();
+//    }
+//
+//    @Override
+//    public List<Result> getByDateBetween(LocalDate from, LocalDate to) {
+//        return List.of();
+//    }
+//
+//    @Override
+//    public List<Result> getAllByStake(Stake stake) {
+//        return resultRepository.getResultsByProviderAndGameTypeAndStake(provider, gameType, stake);
+//    }
+//
+//    @Override
+//    public List<Result> getAllByDate(LocalDate start, LocalDate end, Provider provider, GameType gameType, Stake stake) {
+//        return resultRepository.getResultsByDateBetween(start, end, provider, gameType, stake);
+//    }
 
     @Override
-    public List<Result> getAllByDate(LocalDate start, LocalDate end, Provider provider, GameType gameType, Stake stake) {
-        return resultRepository.getResultsByDateBetween(start, end, provider, gameType, stake);
-    }
-
-    @Override
-    public void saveIfNotExists(Result result) {
+    public Result saveIfNotExists(Result result) {
 
         Player player = getPlayer(result.getPlayer());
         DateLB date = getDateLB(result);
@@ -60,16 +64,17 @@ public class ResultServiceImpl implements ResultService {
         result.setPlayer(player);
         result.setDate(date);
 
-        saveResult(result);
+        return saveResult(result);
     }
 
-    private void saveResult(Result result) {
+    private Result saveResult(Result result) {
         ExampleMatcher ignoringIdMatcher = ExampleMatcher.matching()
                 .withIgnorePaths("id");
         Example<Result> example = Example.of(result, ignoringIdMatcher);
         if (!resultRepository.exists(example)) {
-            resultRepository.save(result);
+            return resultRepository.save(result);
         }
+        return result;
     }
 
     private DateLB getDateLB(Result result) {
@@ -87,24 +92,24 @@ public class ResultServiceImpl implements ResultService {
         }
     }
 
-    @Override
-    public List<Provider> getAllProviders() {
-        return resultRepository.getDistinctByProvider();
-    }
-
-    @Override
-    public LocalDate getLastUpdateByProvider(Provider provider) {
-        return resultRepository.getLastUpdateByProvider(provider);
-    }
-
-    @Override
-    public List<GameType> getGameTypesDataByProvider(Provider provider) {
-        return resultRepository.getGameTypeDistinctByProvider(provider);
-    }
-
-    @Override
-    public List<Stake> getStakesByProviderAndGameType(Provider provider, GameType gameType) {
-        return resultRepository.getStakeDistinctByProviderAndGameType(provider, gameType);
-    }
+//    @Override
+//    public List<Provider> getAllProviders() {
+//        return resultRepository.getDistinctByProvider();
+//    }
+//
+//    @Override
+//    public LocalDate getLastUpdateByProvider(Provider provider) {
+//        return resultRepository.getLastUpdateByProvider(provider);
+//    }
+//
+//    @Override
+//    public List<GameType> getGameTypesDataByProvider(Provider provider) {
+//        return resultRepository.getGameTypeDistinctByProvider(provider);
+//    }
+//
+//    @Override
+//    public List<Stake> getStakesByProviderAndGameType(Provider provider, GameType gameType) {
+//        return resultRepository.getStakeDistinctByProviderAndGameType(provider, gameType);
+//    }
 
 }

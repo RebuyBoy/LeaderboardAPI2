@@ -31,10 +31,6 @@ public class Result {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "date_id")
     private DateLB date;
-    @Enumerated(EnumType.STRING)
-    private GameType gameType;
-    @Enumerated(EnumType.STRING)
-    private Provider provider;
 
     public Result() {
     }
@@ -47,8 +43,6 @@ public class Result {
         this.player = builder.player;
         this.stake = builder.stake;
         this.date = builder.date;
-        this.gameType = builder.gameType;
-        this.provider = builder.provider;
     }
 
     public int getId() {
@@ -107,22 +101,6 @@ public class Result {
         this.date = date;
     }
 
-    public GameType getGameType() {
-        return gameType;
-    }
-
-    public void setGameType(GameType gameType) {
-        this.gameType = gameType;
-    }
-
-    public Provider getProvider() {
-        return provider;
-    }
-
-    public void setProvider(Provider provider) {
-        this.provider = provider;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -156,7 +134,6 @@ public class Result {
 
     public static final class Builder {
 
-        private Provider provider;
         private int id;
         private int rank;
         private BigDecimal prize;
@@ -164,7 +141,6 @@ public class Result {
         private Player player;
         private Stake stake;
         private DateLB date;
-        private GameType gameType;
 
         public Builder id(int id) {
             this.id = id;
@@ -198,16 +174,6 @@ public class Result {
 
         public Builder date(DateLB date) {
             this.date = date;
-            return this;
-        }
-
-        public Builder gameType(GameType gameType) {
-            this.gameType = gameType;
-            return this;
-        }
-
-        public Builder provider(Provider provider) {
-            this.provider = provider;
             return this;
         }
 
