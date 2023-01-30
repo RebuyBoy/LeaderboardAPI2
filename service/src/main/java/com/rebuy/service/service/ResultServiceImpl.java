@@ -1,5 +1,6 @@
 package com.rebuy.service.service;
 
+import com.rebuy.service.dto.api.DateAndCount;
 import com.rebuy.service.entity.DateLB;
 import com.rebuy.service.entity.Player;
 import com.rebuy.service.entity.Result;
@@ -43,6 +44,11 @@ public class ResultServiceImpl implements ResultService {
         result.setDate(date);
 
         return saveResult(result);
+    }
+
+    @Override
+    public List<DateAndCount> getResultNumber() {
+        return resultRepository.getGroupedByDateCountAndPrizeSum();
     }
 
     private Result saveResult(Result result) {

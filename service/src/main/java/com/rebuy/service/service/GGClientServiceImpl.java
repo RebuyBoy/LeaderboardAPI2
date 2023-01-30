@@ -47,6 +47,11 @@ public class GGClientServiceImpl implements ClientService {
         this.resultService = resultService;
     }
 
+    public void getAndSaveResults(LocalDate from, LocalDate to) {
+        from.datesUntil(to)
+                .forEach(this::getAndSaveResults);
+    }
+
     @Override
     public void getAndSaveResults(LocalDate date) {
         try {
@@ -57,7 +62,7 @@ public class GGClientServiceImpl implements ClientService {
                 }
             }
         } catch (Exception e) {
-            LOG.error("Get or save failed -> date {}, error {}", date, e.getMessage());
+            LOG.error("save failed: {}", e.getMessage());
         }
     }
 
@@ -98,16 +103,15 @@ public class GGClientServiceImpl implements ClientService {
 
 
     private GroupsResponse verifyGroupResponse(LocalDate date) {
-        GroupsResponse groupsResponse = monthlyDataService.getGroupResponse();
-        if (groupsResponse == null || isOutdatedMonth(groupsResponse, date)) {
+        if (isStartOfMonth(date)) {
             monthlyDataService.deleteGroupResponseCache();
-            groupsResponse = monthlyDataService.getGroupResponse();
         }
-        return groupsResponse;
+        LocalDate startOfMonth = date.withDayOfMonth(1);
+        return monthlyDataService.getGroupResponse(startOfMonth);
     }
 
-    private boolean isOutdatedMonth(GroupsResponse groupsResponse, LocalDate date) {
-        return groupsResponse.getStartedAt().getMonthValue() != (date.getMonthValue());
+    private boolean isStartOfMonth(LocalDate date) {
+        return date.getDayOfMonth() == 1;
     }
 
     private void saveResults(LocalDate date, Stake stake, List<GGResultResponse> resultDTOS) {

@@ -12,4 +12,6 @@ public interface ClientService {
 
     void getAndSaveResults(LocalDate date);
 
+    void getAndSaveResults(LocalDate from, LocalDate to);
+
 }

@@ -1,5 +1,6 @@
 package com.rebuy.service.repository;
 
+import com.rebuy.service.dto.api.DateAndCount;
 import com.rebuy.service.entity.Result;
 import com.rebuy.service.entity.Stake;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -8,8 +8,10 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 @Repository
-public interface GroupIdRepository extends JpaRepository<GroupId,Integer> {
+public interface GroupIdRepository extends JpaRepository<GroupId, Integer> {
 
     Optional<GroupId> getByDateAndPromotionGroupId(LocalDate date, String groupId);
+
+    Optional<GroupId> getByDate(LocalDate date);
 
 }

@@ -60,10 +60,18 @@ public class AggregatedResultController implements BaseController {
         return clientService.getResults(currentDate, stake);
     }
 
-    @GetMapping("/save")
-    public void saveDataByDate(@RequestParam() @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
-        log.info("request to /save with date {}", date);
+    @GetMapping("/parseDay")
+    public void parseDay(@RequestParam() @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
+        log.info("request to /parse day with date {}", date);
         clientService.getAndSaveResults(date);
+    }
+
+    @GetMapping("/parseDays")
+    public void parseDays(
+            @RequestParam() @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate start,
+            @RequestParam() @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate end) {
+        log.info("request to /parse days from {} to {}", start, end);
+        clientService.getAndSaveResults(start, end);
     }
 
 }
