@@ -33,8 +33,8 @@ public class GGRequestServiceImpl implements GGRequestService {
     public List<GGResultResponse> promotionIdRequest(String url) {
         try {
             ResponseEntity<Response> promotionIdResponse = restTemplate.exchange(url, HttpMethod.GET, null, Response.class);
-            String secret = promotionIdResponse.getHeaders().get(SECRET_KEY).get(0);
-            String decrypt = Aes.decrypt(secret, promotionIdResponse.getBody().getData());
+            String secret = Objects.requireNonNull(promotionIdResponse.getHeaders().get(SECRET_KEY)).get(0);
+            String decrypt = Aes.decrypt(secret, Objects.requireNonNull(promotionIdResponse.getBody()).getData());
             return mapper.readValue(decrypt, new TypeReference<>() {
             });
         } catch (Exception e) {

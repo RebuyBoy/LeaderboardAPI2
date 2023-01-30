@@ -13,10 +13,8 @@ public class GGResultResponse {
     @JsonProperty("countryId")
     private String countryCode;
     private BigDecimal points;
-    //TODO current prize??
     private BigDecimal prize;
     private int rank;
-    //TODO stake ? isCorrect??
     private int stake;
     private boolean isCorrect;
 
