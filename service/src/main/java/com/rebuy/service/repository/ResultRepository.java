@@ -24,5 +24,12 @@ public interface ResultRepository extends JpaRepository<Result, Integer> {
             @Param("end") LocalDate end,
             @Param("stake") Stake stake
     );
+
+    @Query("SELECT d.date as date, count(r) as count, sum(r.prize) as prizes " +
+            "FROM Result r " +
+            "INNER JOIN DateLB d on r.date.id = d.id " +
+            "GROUP BY d.date " +
+            "ORDER BY d.date DESC")
+    List<DateAndCount> getGroupedByDateCountAndPrizeSum();
 }
 
