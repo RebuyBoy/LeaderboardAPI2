@@ -29,35 +29,13 @@ public class ResultServiceImpl implements ResultService {
         this.dateService = dateService;
     }
 
-
     @Override
     public List<Result> get(LocalDate from, LocalDate to, Stake stake) {
         return resultRepository.getResults(from, to, stake);
     }
 
-//    @Override
-//    public List<Result> getByDateFrom(LocalDate from) {
-//        return List.of();
-//    }
-//
-//    @Override
-//    public List<Result> getByDateBetween(LocalDate from, LocalDate to) {
-//        return List.of();
-//    }
-//
-//    @Override
-//    public List<Result> getAllByStake(Stake stake) {
-//        return resultRepository.getResultsByProviderAndGameTypeAndStake(provider, gameType, stake);
-//    }
-//
-//    @Override
-//    public List<Result> getAllByDate(LocalDate start, LocalDate end, Provider provider, GameType gameType, Stake stake) {
-//        return resultRepository.getResultsByDateBetween(start, end, provider, gameType, stake);
-//    }
-
     @Override
     public Result saveIfNotExists(Result result) {
-
         Player player = getPlayer(result.getPlayer());
         DateLB date = getDateLB(result);
 
@@ -71,9 +49,11 @@ public class ResultServiceImpl implements ResultService {
         ExampleMatcher ignoringIdMatcher = ExampleMatcher.matching()
                 .withIgnorePaths("id");
         Example<Result> example = Example.of(result, ignoringIdMatcher);
+
         if (!resultRepository.exists(example)) {
             return resultRepository.save(result);
         }
+
         return result;
     }
 
@@ -83,6 +63,7 @@ public class ResultServiceImpl implements ResultService {
 
     private Player getPlayer(Player newPlayer) {
         Optional<Player> optionalPlayer = playerService.getByName(newPlayer.getName());
+
         if (optionalPlayer.isPresent()) {
             Player currentPlayer = optionalPlayer.get();
             playerService.updatePlayer(newPlayer, currentPlayer);
@@ -91,25 +72,5 @@ public class ResultServiceImpl implements ResultService {
             return playerService.save(newPlayer);
         }
     }
-
-//    @Override
-//    public List<Provider> getAllProviders() {
-//        return resultRepository.getDistinctByProvider();
-//    }
-//
-//    @Override
-//    public LocalDate getLastUpdateByProvider(Provider provider) {
-//        return resultRepository.getLastUpdateByProvider(provider);
-//    }
-//
-//    @Override
-//    public List<GameType> getGameTypesDataByProvider(Provider provider) {
-//        return resultRepository.getGameTypeDistinctByProvider(provider);
-//    }
-//
-//    @Override
-//    public List<Stake> getStakesByProviderAndGameType(Provider provider, GameType gameType) {
-//        return resultRepository.getStakeDistinctByProviderAndGameType(provider, gameType);
-//    }
 
 }

@@ -18,8 +18,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.rebuy.service.constants.Constants.GMT_MINUS_8;
 
 @Service
 public class GGClientServiceImpl implements ClientService {
@@ -43,11 +47,41 @@ public class GGClientServiceImpl implements ClientService {
         this.resultService = resultService;
     }
 
-    //TODO add another method remove boolean save to db
     @Override
-    public List<ResultResponse> parseResults(LocalDate date, Stake stake, boolean saveToDB) {
-        LOG.info("Parsing data stake: {} date: {} is started", stake, date);
-        date = date.minusDays(1);
+    public void getAndSaveResults(LocalDate date) {
+        try {
+            if (valid(date)) {
+                for (Stake stake : Stake.values()) {
+                    List<GGResultResponse> rawResults = parseResults(date, stake);
+                    saveResults(date, stake, rawResults);
+                }
+            }
+        } catch (Exception e) {
+            LOG.error("Get or save failed -> date {}, error {}", date, e.getMessage());
+        }
+    }
+
+    private boolean valid(LocalDate date) {
+        LocalDate currentDay = ZonedDateTime.now(ZoneId.of(GMT_MINUS_8)).toLocalDate();
+        return date.isBefore(currentDay);
+
+    }
+
+    @Override
+    public List<ResultResponse> getResults(LocalDate date, Stake stake) {
+        List<GGResultResponse> ggResultDTOS = parseResults(date, stake);
+        return ggResultDTOS
+                .stream()
+                .map(result -> new ResultResponse.Builder()
+                        .name(result.getName())
+                        .points(result.getPoints())
+                        .rank(result.getRank())
+                        .build())
+                .toList();
+    }
+
+    private List<GGResultResponse> parseResults(LocalDate date, Stake stake) {
+        LOG.info("Parsing data -> stake: {}, date: {}", stake, date);
         GroupsResponse groupsResponse = verifyGroupResponse(date);
         SetsResponse sets = findSetByDate(groupsResponse, date);
         List<GGResultResponse> ggResultDTOS = new ArrayList<>();
@@ -56,32 +90,15 @@ public class GGClientServiceImpl implements ClientService {
             if (subsetStake.startsWith(stake.getDescription())) {
                 int promotionId = subset.getPromotionId();
                 ggResultDTOS = getGGResultDTOS(promotionId, stake.getDescription());
-                for (GGResultResponse ggResultDTO : ggResultDTOS) {
-                    System.out.println(ggResultDTO);
-                }
                 break;
             }
         }
-        List<ResultResponse> results = new ArrayList<>();
-        if (saveToDB) {
-            saveResults(date, stake, ggResultDTOS);
-        } else {
-            results = ggResultDTOS
-                    .stream()
-                    .map(result -> new ResultResponse.Builder()
-                            .name(result.getName())
-                            .points(result.getPoints())
-                            .rank(result.getRank())
-                            .prize(result.getPrize())
-                            .build())
-                    .toList();
-        }
-        return results;
+        return ggResultDTOS;
     }
+
 
     private GroupsResponse verifyGroupResponse(LocalDate date) {
         GroupsResponse groupsResponse = monthlyDataService.getGroupResponse();
-        //TODO fix cash is null
         if (groupsResponse == null || isOutdatedMonth(groupsResponse, date)) {
             monthlyDataService.deleteGroupResponseCache();
             groupsResponse = monthlyDataService.getGroupResponse();
@@ -94,6 +111,7 @@ public class GGClientServiceImpl implements ClientService {
     }
 
     private void saveResults(LocalDate date, Stake stake, List<GGResultResponse> resultDTOS) {
+        LOG.info("Saving results to db -> stake: {}, date: {}, quantity: {}", stake, date, resultDTOS.size());
         resultDTOS.stream()
                 .map(resultDTO -> resultConverter.convert(resultDTO, date, stake))
                 .forEach(resultService::saveIfNotExists);

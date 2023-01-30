@@ -16,21 +16,18 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Service
-public class GGClientGGMonthlyDataServiceImpl implements GGMonthlyDataService {
+public class GGClientGroupResponseServiceImpl implements GGMonthlyDataService {
 
-    private static final Logger LOG = LoggerFactory.getLogger(GGClientGGMonthlyDataServiceImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(GGClientGroupResponseServiceImpl.class);
     private static final String GROUP_ID_REGEX = "groupId=(\\d+)";
-    //TODO change link to GLOBAL
-    //TODO to props
-    private static final String GGN_MAIN_SHORT_DECK_URL = "https://play.pokerok136.com/promotions/promo-short-deck";
+    private static final String GGN_MAIN_SHORT_DECK_URL = "https://play.pokerok138.com/promotions/promo-short-deck";
     private static final String GGN_GROUP_ID_REQUEST_FORMAT = "https://pml.good-game-network.com/lapi/leaderboard/groups/%s";
-
 
     private final GGRequestService requestService;
     private final GGGroupIdService groupIdService;
 
 
-    public GGClientGGMonthlyDataServiceImpl(GGRequestService requestService,
+    public GGClientGroupResponseServiceImpl(GGRequestService requestService,
                                             GGGroupIdService groupIdService) {
 
         this.requestService = requestService;
@@ -41,14 +38,12 @@ public class GGClientGGMonthlyDataServiceImpl implements GGMonthlyDataService {
     @Cacheable("groupResponse")
     public GroupsResponse getGroupResponse() {
         LOG.info("Started parsing monthly data");
-        GroupsResponse groupsResponse = null;
         try {
             String groupId = findGroupIdFromResponse(requestService.getHTMLBody(GGN_MAIN_SHORT_DECK_URL));
             String urlWithGroupId = generateGroupIdUrl(groupId);
             groupIdService.saveIfNotExists(buildGroupId(groupId));
             LOG.debug("request group id: {}", urlWithGroupId);
-            groupsResponse = requestService.groupIdRequest(urlWithGroupId);
-            return groupsResponse;
+            return requestService.groupIdRequest(urlWithGroupId);
         } catch (Exception e) {
             LOG.error("Parsing monthly data failed {}", e.getMessage());
         }

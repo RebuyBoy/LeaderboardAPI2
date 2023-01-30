@@ -1,7 +1,5 @@
 package com.rebuy.service.converters;
 
-import com.rebuy.api.scope.dto.request.Stake;
-
 import java.util.Map;
 import java.util.Set;
 
@@ -33,10 +31,6 @@ public class StakeConverter {
         throw new IllegalStateException("Utility class");
     }
 
-    public static com.rebuy.service.entity.Stake toStake(Stake stakeRequest) {
-        return com.rebuy.service.entity.Stake.valueOf(stakeRequest.name());
-    }
-
     public static boolean isSuitable(String stake){
         return SUITABLE_STAKES_SHORT_DECK.contains(stake);
     }
@@ -47,6 +41,5 @@ public class StakeConverter {
         }
         throw new IllegalArgumentException("wrong stake: " + stake);
     }
-
 
 }

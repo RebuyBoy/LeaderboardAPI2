@@ -8,10 +8,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-//@FeignClient(name = "Leaderboard", url = "leaderboardapi:8081" , path = "/leaderboard/v1/results")
-@FeignClient(name = "Leaderboard", url = "localhost:8081" , path = "/leaderboard/v1/results")
+@FeignClient(name = "Leaderboard", url = "leaderboardapi:8081" , path = "/leaderboard/v1/results")
 public interface LeaderboardApiClient {
 
-    @GetMapping("/parseStake")
+    @GetMapping("/current")
     List<ResultResponse> parseCurrentDataByStake(@RequestParam Stake stake);
 }

@@ -8,6 +8,8 @@ import java.util.List;
 
 public interface ClientService {
 
-    List<ResultResponse> parseResults(LocalDate date, Stake stake, boolean saveToDB);
+    List<ResultResponse> getResults(LocalDate date, Stake stake);
+
+    void getAndSaveResults(LocalDate date);
 
 }

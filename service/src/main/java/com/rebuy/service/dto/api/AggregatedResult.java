@@ -8,8 +8,8 @@ import java.util.Objects;
 public class AggregatedResult implements Comparable<AggregatedResult> {
 
     private final PlayerResponse player;
-    private BigDecimal totalPrize;
-    private BigDecimal totalPoints;
+    private final BigDecimal totalPrize;
+    private final BigDecimal totalPoints;
 
     private AggregatedResult(Builder builder) {
         this.player = builder.player;
@@ -27,14 +27,6 @@ public class AggregatedResult implements Comparable<AggregatedResult> {
 
     public BigDecimal getTotalPoints() {
         return totalPoints;
-    }
-
-    public void setTotalPrize(BigDecimal totalPrize) {
-        this.totalPrize = totalPrize;
-    }
-
-    public void setTotalPoints(BigDecimal totalPoints) {
-        this.totalPoints = totalPoints;
     }
 
     @Override

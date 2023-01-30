@@ -39,7 +39,7 @@ public class AggregatedResultController implements BaseController {
         this.clientService = clientService;
     }
 
-    @GetMapping()
+    @GetMapping("/aggregated")
     @Operation(summary = "get results by date from start to end if passed or current date if not, by stake or all stakes")
     @Parameter(example = "start(yyyy-MM-dd): 2022-09-05, end : 2022-09-05")
     public List<AggregatedResult> getResults(
@@ -50,13 +50,20 @@ public class AggregatedResultController implements BaseController {
         return aggregateService.getResults(start, end, stake);
     }
 
-    @GetMapping("/parseStake")
-    public List<ResultResponse> parseCurrentDataByStake(Stake stake) {
-        log.info("request to /parseStake with stake param " + stake.name());
+    @GetMapping("/current")
+    public List<ResultResponse> getCurrentDataByStake(@RequestParam() Stake stake) {
+        log.info("request to /current with stake {}", stake.name());
         LocalDate currentDate = ZonedDateTime
                 .now(ZoneId.of(GMT_MINUS_8))
                 .toLocalDate();
-        return clientService.parseResults(currentDate, stake, false);
+
+        return clientService.getResults(currentDate, stake);
+    }
+
+    @GetMapping("/save")
+    public void saveDataByDate(@RequestParam() @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
+        log.info("request to /save with date {}", date);
+        clientService.getAndSaveResults(date);
     }
 
 }

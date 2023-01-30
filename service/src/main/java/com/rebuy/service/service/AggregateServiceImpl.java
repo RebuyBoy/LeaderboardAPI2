@@ -2,7 +2,6 @@ package com.rebuy.service.service;
 
 import com.rebuy.service.dto.api.AggregatedResult;
 import com.rebuy.service.dto.api.response.PlayerResponse;
-import com.rebuy.service.dto.api.response.ResultResponse;
 import com.rebuy.service.entity.Player;
 import com.rebuy.service.entity.Result;
 import com.rebuy.service.entity.Stake;
@@ -11,7 +10,6 @@ import com.rebuy.service.service.interfaces.ResultService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,29 +23,19 @@ public class AggregateServiceImpl implements AggregateService {
         this.resultService = resultService;
     }
 
-//    @Override
-//    public ResultResponse getAllByStake(Provider provider, GameType gameType, Stake stake) {
-//        List<AggregatedResult> aggregate = aggregate(resultService.getAllByStake(provider, gameType, stake));
-//        return new ResultResponse(new ProviderResponse(provider.name(), provider.getDescription(), provider.getCurrency()), aggregate);
-//    }
-//
-//    @Override
-//    public ResultResponse getAllByDate(LocalDate start, LocalDate end, Provider provider, GameType gameType, Stake stake) {
-//        if (end == null) {
-//            end = LocalDate.now((ZoneId.of(Constants.GMT_MINUS_8)));
-//        }
-//        List<AggregatedResult> aggregatedResultsByDateBetween = aggregate(resultService.getAllByDate(start, end, provider, gameType, stake));
-//        return new ResultResponse(new ProviderResponse(provider.name(), provider.getDescription(), provider.getCurrency()), aggregatedResultsByDateBetween);
-//    }
-
     private List<AggregatedResult> aggregate(List<Result> results) {
         Map<Player, AggregatedResult> playerAggregatedResult = new HashMap<>();
 
         for (Result result : results) {
             Player player = result.getPlayer();
-            playerAggregatedResult.computeIfPresent(player, (p, aggregatedResult) -> summarizeResults(aggregatedResult, result));
-            playerAggregatedResult.putIfAbsent(player, createAggregatedResult(player, result));
+            playerAggregatedResult.compute(player, (p, aggregatedResult) -> {
+                if (aggregatedResult == null) {
+                    return createAggregatedResult(player, result);
+                }
+                return summarizeResults(aggregatedResult, result);
+            });
         }
+
         return playerAggregatedResult.values().stream().sorted().toList();
     }
 
@@ -69,14 +57,13 @@ public class AggregateServiceImpl implements AggregateService {
 
     private PlayerResponse toPlayerResponse(Player player) {
         return new PlayerResponse.Builder()
-                .name(player.getName())
-                .country(player.getCountry())
+                .name(player.getName()).country(player.getCountry())
                 .build();
     }
 
     @Override
     public List<AggregatedResult> getResults(LocalDate from, LocalDate to, Stake stake) {
         return aggregate(resultService.get(from, to, stake));
-//    }
     }
+
 }
