@@ -47,6 +47,11 @@ public class ResultServiceImpl implements ResultService {
     }
 
     @Override
+    public void deleteByDate(LocalDate date) {
+        resultRepository.deleteByDate(date);
+    }
+
+    @Override
     public List<DateAndCount> getResultNumber() {
         return resultRepository.getGroupedByDateCountAndPrizeSum();
     }

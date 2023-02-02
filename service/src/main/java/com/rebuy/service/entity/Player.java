@@ -21,7 +21,7 @@ public class Player {
     private int id;
     private String name;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "country_code")
     private Country country;
 

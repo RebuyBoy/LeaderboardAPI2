@@ -13,6 +13,8 @@ public interface ResultService {
 
     Result saveIfNotExists(Result result);
 
+    void deleteByDate(LocalDate date);
+
     List<DateAndCount> getResultNumber();
 
 }

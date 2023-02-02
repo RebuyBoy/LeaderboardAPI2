@@ -17,7 +17,7 @@ import static com.rebuy.service.constants.Constants.GMT_MINUS_8;
 @Service
 @EnableScheduling
 public class GGScheduler {
-    public static final String EVERY_DAY_3_MINUTES_AFTER_MIDNIGHT_CRON = "0 3 0 * * *";
+    public static final String EVERY_DAY_3_MINUTES_AFTER_MIDNIGHT_CRON = "0 10 0 * * *";
     private static final Logger LOG = LoggerFactory.getLogger(GGScheduler.class);
     private final ClientService clientService;
 

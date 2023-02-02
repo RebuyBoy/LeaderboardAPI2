@@ -28,13 +28,13 @@ import static com.rebuy.service.constants.Constants.GMT_MINUS_8;
 @Tag(name = "AggregateResultController")
 @CrossOrigin()
 @Slf4j
-public class AggregatedResultController implements BaseController {
+public class ResultController implements BaseController {
 
     private final AggregateService aggregateService;
     private final ClientService clientService;
 
-    public AggregatedResultController(AggregateService aggregateService,
-                                      ClientService clientService) {
+    public ResultController(AggregateService aggregateService,
+                            ClientService clientService) {
         this.aggregateService = aggregateService;
         this.clientService = clientService;
     }
@@ -58,20 +58,6 @@ public class AggregatedResultController implements BaseController {
                 .toLocalDate();
 
         return clientService.getResults(currentDate, stake);
-    }
-
-    @GetMapping("/parseDay")
-    public void parseDay(@RequestParam() @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
-        log.info("request to /parse day with date {}", date);
-        clientService.getAndSaveResults(date);
-    }
-
-    @GetMapping("/parseDays")
-    public void parseDays(
-            @RequestParam() @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate start,
-            @RequestParam() @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate end) {
-        log.info("request to /parse days from {} to {}", start, end);
-        clientService.getAndSaveResults(start, end);
     }
 
 }
