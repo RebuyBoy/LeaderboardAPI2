@@ -1,21 +1,27 @@
 package com.rebuy.service.entity;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
-import java.time.LocalDate;
+import javax.persistence.Table;
 import java.util.Objects;
 
 @Entity
+@Table(name = "group_id")
 public class GroupId {
 
     @Id
     @SequenceGenerator(name = "group_id_generator", sequenceName = "group_id_sq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "group_id_generator")
     private int id;
-    private LocalDate date;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "date_id")
+    private DateLB date;
     private String promotionGroupId;
 
     private GroupId(Builder builder) {
@@ -26,11 +32,23 @@ public class GroupId {
     public GroupId() {
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setPromotionGroupId(String promotionGroupId) {
+        this.promotionGroupId = promotionGroupId;
+    }
+
     public int getId() {
         return id;
     }
 
-    public LocalDate getDate() {
+    public void setDate(DateLB date) {
+        this.date = date;
+    }
+
+    public DateLB getDate() {
         return date;
     }
 
@@ -62,10 +80,10 @@ public class GroupId {
 
     public static final class Builder {
 
-        private LocalDate date;
+        private DateLB date;
         private String promotionGroupId;
 
-        public Builder date(LocalDate date) {
+        public Builder date(DateLB date) {
             this.date = date;
             return this;
         }

@@ -38,7 +38,7 @@ public class ResultServiceImpl implements ResultService {
     @Override
     public Result saveIfNotExists(Result result) {
         Player player = getPlayer(result.getPlayer());
-        DateLB date = getDateLB(result);
+        DateLB date = getDateLB(result.getDate());
 
         result.setPlayer(player);
         result.setDate(date);
@@ -68,8 +68,8 @@ public class ResultServiceImpl implements ResultService {
         return result;
     }
 
-    private DateLB getDateLB(Result result) {
-        return dateService.createIfNotExist(result.getDate());
+    private DateLB getDateLB(DateLB dateLB) {
+        return dateService.saveIfNotExist(dateLB);
     }
 
     private Player getPlayer(Player newPlayer) {

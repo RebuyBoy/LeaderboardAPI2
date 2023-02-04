@@ -29,7 +29,15 @@ public class DateLB {
         return date;
     }
 
-    public void setTimestamp(LocalDate date) {
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 

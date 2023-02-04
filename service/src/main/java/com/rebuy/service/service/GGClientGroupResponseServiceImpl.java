@@ -1,6 +1,7 @@
 package com.rebuy.service.service;
 
 import com.rebuy.service.dto.client.gg.GroupsResponse;
+import com.rebuy.service.entity.DateLB;
 import com.rebuy.service.entity.GroupId;
 import com.rebuy.service.exceptions.NoResultException;
 import com.rebuy.service.service.interfaces.GGMonthlyDataService;
@@ -35,11 +36,11 @@ public class GGClientGroupResponseServiceImpl implements GGMonthlyDataService {
 
     @Override
     @Cacheable("groupResponse")
-    public GroupsResponse getGroupResponse(LocalDate firstDayOfMonth) {
+    public GroupsResponse getGroupResponse(LocalDate date) {
         try {
-            String groupId = getGroupId(firstDayOfMonth);
-            String urlWithGroupId = generateGroupIdUrl(groupId);
-            groupIdService.saveIfNotExists(buildGroupId(groupId, firstDayOfMonth));
+            GroupId groupIdValue = saveGroupId(date);
+            LOG.debug("found group id {}", groupIdValue);
+            String urlWithGroupId = generateGroupIdUrl(groupIdValue.getPromotionGroupId());
             LOG.debug("request group id: {}", urlWithGroupId);
             return requestService.groupIdRequest(urlWithGroupId);
         } catch (Exception e) {
@@ -49,20 +50,27 @@ public class GGClientGroupResponseServiceImpl implements GGMonthlyDataService {
     }
 
     @Override
-    @CacheEvict("groupResponse")
+    @CacheEvict(value = "groupResponse", allEntries = true)
     public void deleteGroupResponseCache() {
+        LOG.info("emptying groupResponse cache");
     }
 
-    private String getGroupId(LocalDate firstDayOfMonth) {
-        Optional<GroupId> groupIdOptional = groupIdService.getByDate(firstDayOfMonth);
+    @Override
+    public GroupId saveGroupId(LocalDate date) {
+        LOG.info("Getting group id for date {}", date);
+        Optional<GroupId> groupIdOptional = groupIdService.getByDate(date);
         if (groupIdOptional.isPresent()) {
-            return groupIdOptional.get().getPromotionGroupId();
+            return groupIdOptional.get();
         }
-        if (isCurrentMonth(firstDayOfMonth)) {
-            LOG.info("Getting group id for month {}", firstDayOfMonth);
-            return findGroupIdFromResponse(requestService.getHTMLBody(GGN_MAIN_SHORT_DECK_URL));
+        if (isCurrentMonth(date)) {
+            String groupIdValue = findGroupIdFromResponse(requestService.getHTMLBody(GGN_MAIN_SHORT_DECK_URL));
+            return groupIdService.saveIfNotExists(
+                    new GroupId.Builder()
+                            .promotionGroupId(groupIdValue)
+                            .date(new DateLB(date))
+                            .build());
         }
-        throw new NoResultException("Cant get group id for this month");
+        throw new NoResultException(String.format("Cant get group id for date: %s", date));
     }
 
     private boolean isCurrentMonth(LocalDate date) {
@@ -71,20 +79,12 @@ public class GGClientGroupResponseServiceImpl implements GGMonthlyDataService {
                 && current.getYear() == date.getYear();
     }
 
-
     private String findGroupIdFromResponse(String response) {
         Matcher matcher = Pattern.compile(GROUP_ID_REGEX).matcher(response);
         if (matcher.find()) {
             return matcher.group(1);
         }
         throw new NoResultException("Group id not found");
-    }
-
-    private GroupId buildGroupId(String groupIdStr, LocalDate firstDayOfMonth) {
-        return new GroupId.Builder()
-                .promotionGroupId(groupIdStr)
-                .date(firstDayOfMonth)
-                .build();
     }
 
     private String generateGroupIdUrl(String groupId) {

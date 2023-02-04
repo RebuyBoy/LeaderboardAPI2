@@ -18,11 +18,9 @@ public class DateServiceImpl implements DateService {
     }
 
     @Override
-    public DateLB createIfNotExist(DateLB dateLB) {
+    public DateLB saveIfNotExist(DateLB dateLB) {
         Optional<DateLB> date = getByDate(dateLB.getDate());
-        return date.isEmpty()
-                ? save(dateLB)
-                : date.get();
+        return date.orElseGet(() -> save(dateLB));
     }
 
     @Override

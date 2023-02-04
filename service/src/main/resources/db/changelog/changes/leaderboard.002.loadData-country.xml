@@ -5,7 +5,7 @@
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
     <changeSet author="Sergey M" id="loadData-country">
         <loadData catalogName="leaderboardDB"
-                  file="../../../data/countryCodes.csv"
+                  file="../data/countryCodes.csv"
                   quotchar="'"
                   relativeToChangelogFile="true"
                   separator=";"

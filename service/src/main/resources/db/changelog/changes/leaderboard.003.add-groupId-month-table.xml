@@ -9,13 +9,21 @@
             <column name="id" type="int">
                 <constraints primaryKey="true" primaryKeyName="pk_group_id"/>
             </column>
-            <column name="date" type="date">
+            <column name="date_id" type="int">
                 <constraints nullable="false"/>
             </column>
             <column name="promotion_group_id" type="varchar(20)">
                 <constraints nullable="false"/>
             </column>
         </createTable>
+
+        <addForeignKeyConstraint
+                baseColumnNames="date_id"
+                baseTableName="group_id"
+                constraintName="fk_group_id_pk_leaderboard_date_id"
+                referencedColumnNames="id"
+                referencedTableName="leaderboard_date"
+                validate="true"/>
 
         <createSequence
                 sequenceName="group_id_sq"

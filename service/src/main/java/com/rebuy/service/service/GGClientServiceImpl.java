@@ -13,17 +13,14 @@ import com.rebuy.service.service.interfaces.ClientService;
 import com.rebuy.service.service.interfaces.GGMonthlyDataService;
 import com.rebuy.service.service.interfaces.GGRequestService;
 import com.rebuy.service.service.interfaces.ResultService;
+import com.rebuy.service.util.ZonedLocalDateSupplier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.rebuy.service.constants.Constants.GMT_MINUS_8;
 
 @Service
 public class GGClientServiceImpl implements ClientService {
@@ -47,6 +44,7 @@ public class GGClientServiceImpl implements ClientService {
         this.resultService = resultService;
     }
 
+    //TODO  separate get and save
     public void getAndSaveResults(LocalDate from, LocalDate to) {
         from.datesUntil(to)
                 .forEach(this::getAndSaveResults);
@@ -67,8 +65,8 @@ public class GGClientServiceImpl implements ClientService {
     }
 
     private boolean valid(LocalDate date) {
-        LocalDate currentDay = ZonedDateTime.now(ZoneId.of(GMT_MINUS_8)).toLocalDate();
-        return date.isBefore(currentDay);
+        LOG.info("Leaderboard for that day is not finished");
+        return date.isBefore(ZonedLocalDateSupplier.localDateNowGMTMinus8());
 
     }
 
@@ -87,7 +85,7 @@ public class GGClientServiceImpl implements ClientService {
 
     private List<GGResultResponse> parseResults(LocalDate date, Stake stake) {
         LOG.info("Parsing data -> stake: {}, date: {}", stake, date);
-        GroupsResponse groupsResponse = verifyGroupResponse(date);
+        GroupsResponse groupsResponse = monthlyDataService.getGroupResponse(date);
         SetsResponse sets = findSetByDate(groupsResponse, date);
         List<GGResultResponse> ggResultDTOS = new ArrayList<>();
         for (SubsetsResponse subset : sets.getSubsets()) {
@@ -99,19 +97,6 @@ public class GGClientServiceImpl implements ClientService {
             }
         }
         return ggResultDTOS;
-    }
-
-
-    private GroupsResponse verifyGroupResponse(LocalDate date) {
-        if (isStartOfMonth(date)) {
-            monthlyDataService.deleteGroupResponseCache();
-        }
-        LocalDate startOfMonth = date.withDayOfMonth(1);
-        return monthlyDataService.getGroupResponse(startOfMonth);
-    }
-
-    private boolean isStartOfMonth(LocalDate date) {
-        return date.getDayOfMonth() == 1;
     }
 
     private void saveResults(LocalDate date, Stake stake, List<GGResultResponse> resultDTOS) {

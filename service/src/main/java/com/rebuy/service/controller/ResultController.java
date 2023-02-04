@@ -5,6 +5,7 @@ import com.rebuy.service.dto.api.response.ResultResponse;
 import com.rebuy.service.entity.Stake;
 import com.rebuy.service.service.interfaces.AggregateService;
 import com.rebuy.service.service.interfaces.ClientService;
+import com.rebuy.service.util.ZonedLocalDateSupplier;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -17,11 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.List;
-
-import static com.rebuy.service.constants.Constants.GMT_MINUS_8;
 
 @RestController
 @RequestMapping("v1/results")
@@ -53,10 +50,7 @@ public class ResultController implements BaseController {
     @GetMapping("/current")
     public List<ResultResponse> getCurrentDataByStake(@RequestParam() Stake stake) {
         log.info("request to /current with stake {}", stake.name());
-        LocalDate currentDate = ZonedDateTime
-                .now(ZoneId.of(GMT_MINUS_8))
-                .toLocalDate();
-
+        LocalDate currentDate = ZonedLocalDateSupplier.localDateNowGMTMinus8();
         return clientService.getResults(currentDate, stake);
     }
 

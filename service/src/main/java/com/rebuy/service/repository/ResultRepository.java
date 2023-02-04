@@ -17,7 +17,7 @@ public interface ResultRepository extends JpaRepository<Result, Integer> {
 
     @Query("SELECT r " +
             "FROM Result r " +
-            "JOIN r.date d " +
+            "JOIN r.date d ON r.date.id = d.id " +
             "WHERE (:stake IS NULL OR r.stake = :stake)" +
             "AND (cast(:start as timestamp) IS NULL OR d.date >= :start) " +
             "AND (cast(:end as timestamp) IS NULL OR d.date <= :end)")
@@ -38,7 +38,6 @@ public interface ResultRepository extends JpaRepository<Result, Integer> {
     @Query("DELETE FROM Result r " +
             "       WHERE r.date.id = (SELECT d.id FROM DateLB d " +
             "                                  WHERE d.date = :date)")
-    int deleteByDate(@Param("date") LocalDate date);
+    void deleteByDate(@Param("date") LocalDate date);
 
 }
-
