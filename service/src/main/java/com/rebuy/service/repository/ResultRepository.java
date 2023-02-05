@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -34,10 +35,11 @@ public interface ResultRepository extends JpaRepository<Result, Integer> {
             "ORDER BY d.date DESC")
     List<DateAndCount> getGroupedByDateCountAndPrizeSum();
 
+    @Transactional
     @Modifying
     @Query("DELETE FROM Result r " +
             "       WHERE r.date.id = (SELECT d.id FROM DateLB d " +
             "                                  WHERE d.date = :date)")
-    void deleteByDate(@Param("date") LocalDate date);
+    int deleteByDate(@Param("date") LocalDate date);
 
 }

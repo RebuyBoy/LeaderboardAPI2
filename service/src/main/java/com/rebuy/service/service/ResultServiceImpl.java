@@ -9,6 +9,7 @@ import com.rebuy.service.repository.ResultRepository;
 import com.rebuy.service.service.interfaces.DateService;
 import com.rebuy.service.service.interfaces.PlayerService;
 import com.rebuy.service.service.interfaces.ResultService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class ResultServiceImpl implements ResultService {
 
     private final ResultRepository resultRepository;
@@ -48,7 +50,8 @@ public class ResultServiceImpl implements ResultService {
 
     @Override
     public void deleteByDate(LocalDate date) {
-        resultRepository.deleteByDate(date);
+        int rowsDeleted = resultRepository.deleteByDate(date);
+        log.info("{} rows deleted per date {}", rowsDeleted, date);
     }
 
     @Override
