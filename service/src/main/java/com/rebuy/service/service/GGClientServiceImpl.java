@@ -10,7 +10,7 @@ import com.rebuy.service.dto.client.gg.SubsetsResponse;
 import com.rebuy.service.entity.Stake;
 import com.rebuy.service.exceptions.NoResultException;
 import com.rebuy.service.service.interfaces.ClientService;
-import com.rebuy.service.service.interfaces.GGMonthlyDataService;
+import com.rebuy.service.service.interfaces.GGGroupResponseService;
 import com.rebuy.service.service.interfaces.GGRequestService;
 import com.rebuy.service.service.interfaces.ResultService;
 import com.rebuy.service.util.ZonedLocalDateSupplier;
@@ -27,13 +27,13 @@ public class GGClientServiceImpl implements ClientService {
 
     private static final String PROMO_URL_FORMAT = "https://pml.good-game-network.com/lapi/leaderboard/%s/?status=PENDING&status=OPTED_IN&status=COMPLETED&status=EXPIRED&limit=%s&hasSummary=true&hasSummaryPaidPrizes=true&hasSummaryPrizeItem=true";
     private static final Logger LOG = LoggerFactory.getLogger(GGClientServiceImpl.class);
-    private final GGMonthlyDataService monthlyDataService;
+    private final GGGroupResponseService monthlyDataService;
     private final GGRequestService ggRequestService;
     private final ResultResponseConverter resultConverter;
     private final ResultService resultService;
 
 
-    public GGClientServiceImpl(GGMonthlyDataService monthlyDataService,
+    public GGClientServiceImpl(GGGroupResponseService monthlyDataService,
                                GGRequestService ggRequestService,
                                ResultResponseConverter converter,
                                ResultService resultService) {
@@ -58,6 +58,8 @@ public class GGClientServiceImpl implements ClientService {
                     List<GGResultResponse> rawResults = parseResults(date, stake);
                     saveResults(date, stake, rawResults);
                 }
+            } else {
+                LOG.info("Leaderboard for that day is not finished");
             }
         } catch (Exception e) {
             LOG.error("save failed: {}", e.getMessage());
@@ -65,7 +67,6 @@ public class GGClientServiceImpl implements ClientService {
     }
 
     private boolean valid(LocalDate date) {
-        LOG.info("Leaderboard for that day is not finished");
         return date.isBefore(ZonedLocalDateSupplier.localDateNowGMTMinus8());
 
     }
