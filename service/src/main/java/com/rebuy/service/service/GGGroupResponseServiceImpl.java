@@ -4,7 +4,7 @@ import com.rebuy.service.dto.client.gg.GroupsResponse;
 import com.rebuy.service.entity.DateLB;
 import com.rebuy.service.entity.GroupId;
 import com.rebuy.service.exceptions.NoResultException;
-import com.rebuy.service.service.interfaces.GGMonthlyDataService;
+import com.rebuy.service.service.interfaces.GGGroupResponseService;
 import com.rebuy.service.service.interfaces.GGRequestService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,9 +18,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Service
-public class GGClientGroupResponseServiceImpl implements GGMonthlyDataService {
+public class GGGroupResponseServiceImpl implements GGGroupResponseService {
 
-    private static final Logger LOG = LoggerFactory.getLogger(GGClientGroupResponseServiceImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(GGGroupResponseServiceImpl.class);
     private static final String GROUP_ID_REGEX = "groupId=(\\d+)";
     private static final String GGN_MAIN_SHORT_DECK_URL = "https://play.pokerok138.com/promotions/promo-short-deck";
     private static final String GGN_GROUP_ID_REQUEST_FORMAT = "https://pml.good-game-network.com/lapi/leaderboard/groups/%s";
@@ -28,8 +28,8 @@ public class GGClientGroupResponseServiceImpl implements GGMonthlyDataService {
     private final GGRequestService requestService;
     private final GGGroupIdService groupIdService;
 
-    public GGClientGroupResponseServiceImpl(GGRequestService requestService,
-                                            GGGroupIdService groupIdService) {
+    public GGGroupResponseServiceImpl(GGRequestService requestService,
+                                      GGGroupIdService groupIdService) {
         this.requestService = requestService;
         this.groupIdService = groupIdService;
     }
@@ -51,7 +51,7 @@ public class GGClientGroupResponseServiceImpl implements GGMonthlyDataService {
 
     @Override
     @CacheEvict(value = "groupResponse", allEntries = true)
-    public void deleteGroupResponseCache() {
+    public void clearCache() {
         LOG.info("emptying groupResponse cache");
     }
 

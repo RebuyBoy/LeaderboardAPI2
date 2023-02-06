@@ -5,12 +5,12 @@ import com.rebuy.service.entity.GroupId;
 
 import java.time.LocalDate;
 
-public interface GGMonthlyDataService {
+public interface GGGroupResponseService {
 
     GroupsResponse getGroupResponse(LocalDate firstDayOfMonth);
 
     GroupId saveGroupId(LocalDate date);
 
-    void deleteGroupResponseCache();
+    void clearCache();
 
 }

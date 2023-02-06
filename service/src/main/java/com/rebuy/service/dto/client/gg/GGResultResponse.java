@@ -3,6 +3,7 @@ package com.rebuy.service.dto.client.gg;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
 
 
@@ -16,8 +17,6 @@ public class GGResultResponse {
     private BigDecimal prize;
     private int rank;
     private int stake;
-    private boolean isCorrect;
-
 
     public String getName() {
         return name;
@@ -31,10 +30,6 @@ public class GGResultResponse {
         return countryCode;
     }
 
-    public void setCountryCode(String countryCode) {
-        this.countryCode = countryCode;
-    }
-
     public BigDecimal getPoints() {
         return points;
     }
@@ -44,20 +39,22 @@ public class GGResultResponse {
         this.points = BigDecimal.valueOf(Double.parseDouble(points));
     }
 
-    public void setPoints(BigDecimal points) {
-        this.points = points;
-    }
-
     public BigDecimal getPrize() {
         return prize;
     }
 
-    @JsonProperty("prizePaid")
-    public void setPrize(Map<String, Object> prizePaid) {
-        if (prizePaid == null) {
+    @SuppressWarnings("unchecked")
+    @JsonProperty("prize")
+    public void setPrize(Map<String, Object> prize) {
+        if (prize == null) {
             this.prize = new BigDecimal(0);
         } else {
-            Object value = prizePaid.get("value");
+            List<Map<String, Object>> prizeItems = (List<Map<String, Object>>) prize.get("prizeItem");
+            Object value = prizeItems.stream()
+                    .filter(prizeItem -> prizeItem.get("currencyId").equals("GCD"))
+                    .findFirst()
+                    .map(prizeItem -> prizeItem.get("value"))
+                    .orElse(0);
             if (value instanceof Double doubleValue) {
                 this.prize = BigDecimal.valueOf(doubleValue);
             } else if (value instanceof Integer integerValue) {
@@ -66,16 +63,8 @@ public class GGResultResponse {
         }
     }
 
-    public void setPrize(BigDecimal prize) {
-        this.prize = prize;
-    }
-
     public int getRank() {
         return rank;
-    }
-
-    public void setRank(int rank) {
-        this.rank = rank;
     }
 
     public int getStake() {
@@ -84,14 +73,6 @@ public class GGResultResponse {
 
     public void setStake(int stake) {
         this.stake = stake;
-    }
-
-    public boolean isCorrect() {
-        return isCorrect;
-    }
-
-    public void setCorrect(boolean correct) {
-        isCorrect = correct;
     }
 
     @Override
@@ -103,7 +84,6 @@ public class GGResultResponse {
                 ", prize=" + prize +
                 ", rank=" + rank +
                 ", stake=" + stake +
-                ", isCorrect=" + isCorrect +
                 '}';
     }
 

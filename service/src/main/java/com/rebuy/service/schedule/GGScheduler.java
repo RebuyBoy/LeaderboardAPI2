@@ -3,7 +3,7 @@ package com.rebuy.service.schedule;
 import com.rebuy.service.constants.Constants;
 import com.rebuy.service.entity.GroupId;
 import com.rebuy.service.service.interfaces.ClientService;
-import com.rebuy.service.service.interfaces.GGMonthlyDataService;
+import com.rebuy.service.service.interfaces.GGGroupResponseService;
 import com.rebuy.service.util.ZonedLocalDateSupplier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,16 +18,16 @@ import static com.rebuy.service.constants.Constants.GMT_MINUS_8;
 @Service
 @EnableScheduling
 public class GGScheduler {
-    public static final String START_OF_NEW_DAY = "0 30 0 * * *";
-    public static final String END_OF_DAY = "0 30 23 * * *";
+    public static final String START_OF_NEW_DAY = "36 59 0 * * *";
+    public static final String END_OF_DAY = "21 30 23 * * *";
     private static final Logger LOG = LoggerFactory.getLogger(GGScheduler.class);
     private final ClientService clientService;
-    private final GGMonthlyDataService ggMonthlyDataService;
+    private final GGGroupResponseService ggGroupResponseService;
 
     public GGScheduler(ClientService clientService,
-                       GGMonthlyDataService ggMonthlyDataService) {
+                       GGGroupResponseService ggGroupResponseService) {
         this.clientService = clientService;
-        this.ggMonthlyDataService = ggMonthlyDataService;
+        this.ggGroupResponseService = ggGroupResponseService;
     }
 
     @Scheduled(cron = START_OF_NEW_DAY, zone = Constants.GMT_MINUS_8)
@@ -36,12 +36,12 @@ public class GGScheduler {
                 .minusDays(1);
         LOG.info("scheduler start collecting data for day {}", prevDay);
         clientService.getAndSaveResults(prevDay);
+        ggGroupResponseService.clearCache();
     }
 
     @Scheduled(cron = END_OF_DAY, zone = GMT_MINUS_8)
     public void saveGroupId() {
-        GroupId groupId = ggMonthlyDataService.saveGroupId(ZonedLocalDateSupplier.localDateNowGMTMinus8());
-        ggMonthlyDataService.deleteGroupResponseCache();
+        GroupId groupId = ggGroupResponseService.saveGroupId(ZonedLocalDateSupplier.localDateNowGMTMinus8());
         LOG.info("scheduler saved group id {} for date {}", groupId.getPromotionGroupId(), groupId.getDate());
     }
 
