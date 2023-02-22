@@ -11,6 +11,4 @@ public interface GGGroupResponseService {
 
     GroupId saveGroupId(LocalDate date);
 
-    void clearCache();
-
 }

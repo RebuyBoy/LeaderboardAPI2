@@ -8,7 +8,6 @@ import com.rebuy.service.service.interfaces.GGGroupResponseService;
 import com.rebuy.service.service.interfaces.GGRequestService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +21,7 @@ public class GGGroupResponseServiceImpl implements GGGroupResponseService {
 
     private static final Logger LOG = LoggerFactory.getLogger(GGGroupResponseServiceImpl.class);
     private static final String GROUP_ID_REGEX = "groupId=(\\d+)";
-    private static final String GGN_MAIN_SHORT_DECK_URL = "https://play.pokerok138.com/promotions/promo-short-deck";
+    private static final String GGN_MAIN_SHORT_DECK_URL = "https://play.pokerok142.com/promotions/promo-short-deck";
     private static final String GGN_GROUP_ID_REQUEST_FORMAT = "https://pml.good-game-network.com/lapi/leaderboard/groups/%s";
 
     private final GGRequestService requestService;
@@ -47,12 +46,6 @@ public class GGGroupResponseServiceImpl implements GGGroupResponseService {
             LOG.error("Parsing monthly data failed {}", e.getMessage());
         }
         throw new NoResultException("Group response request failed");
-    }
-
-    @Override
-    @CacheEvict(value = "groupResponse", allEntries = true)
-    public void clearCache() {
-        LOG.info("emptying groupResponse cache");
     }
 
     @Override

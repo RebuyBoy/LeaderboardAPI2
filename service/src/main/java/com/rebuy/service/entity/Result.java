@@ -3,7 +3,6 @@ package com.rebuy.service.entity;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -23,14 +22,14 @@ public class Result {
     private int rank;
     private BigDecimal prize;
     private BigDecimal points;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne()
     @JoinColumn(name = "player_id")
     private Player player;
     @Enumerated(EnumType.STRING)
     private Stake stake;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne()
     @JoinColumn(name = "date_id")
-    private DateLB date;
+    private DateLB dateLB;
 
     public Result() {
     }
@@ -42,7 +41,7 @@ public class Result {
         this.points = builder.point;
         this.player = builder.player;
         this.stake = builder.stake;
-        this.date = builder.date;
+        this.dateLB = builder.date;
     }
 
     public int getId() {
@@ -93,12 +92,12 @@ public class Result {
         this.stake = stake;
     }
 
-    public DateLB getDate() {
-        return date;
+    public DateLB getDateLB() {
+        return dateLB;
     }
 
-    public void setDate(DateLB date) {
-        this.date = date;
+    public void setDateLB(DateLB date) {
+        this.dateLB = date;
     }
 
     @Override
@@ -111,12 +110,12 @@ public class Result {
                 && Objects.equals(points, that.points)
                 && player.equals(that.player)
                 && stake.equals(that.stake)
-                && date.equals(that.date);
+                && dateLB.equals(that.dateLB);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(rank, prize, points, player, stake, date);
+        return Objects.hash(rank, prize, points, player, stake, dateLB);
     }
 
     @Override
@@ -128,7 +127,7 @@ public class Result {
                 ", point=" + points +
                 ", player=" + player +
                 ", stake=" + stake +
-                ", date=" + date +
+                ", date=" + dateLB +
                 '}';
     }
 
