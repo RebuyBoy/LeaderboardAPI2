@@ -1,6 +1,7 @@
 package com.rebuy.service.service.interfaces;
 
 import com.rebuy.service.dto.api.DateAndCount;
+import com.rebuy.service.dto.api.PlaceAndPoints;
 import com.rebuy.service.entity.Result;
 import com.rebuy.service.entity.Stake;
 
@@ -17,4 +18,5 @@ public interface ResultService {
 
     List<DateAndCount> getResultNumber();
 
+    List<PlaceAndPoints> getAverages(LocalDate from, LocalDate to, Stake stake);
 }

@@ -1,0 +1,12 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://leaderboardDB/LeaderboardDB
+    username: postgres
+    password: postgres
+  liquibase.change-log: classpath:/db/changelog/master.xml
+  jpa:
+    hibernate.ddl-auto: none
+    database: postgresql
+server:
+  servlet.context-path: /leaderboard
+  port: 8081

@@ -1,6 +1,7 @@
 package com.rebuy.service.service;
 
 import com.rebuy.service.dto.api.AggregatedResult;
+import com.rebuy.service.dto.api.PlaceAndPoints;
 import com.rebuy.service.dto.api.response.PlayerResponse;
 import com.rebuy.service.entity.Player;
 import com.rebuy.service.entity.Result;
@@ -9,6 +10,7 @@ import com.rebuy.service.service.interfaces.AggregateService;
 import com.rebuy.service.service.interfaces.ResultService;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
@@ -35,8 +37,10 @@ public class AggregateServiceImpl implements AggregateService {
                 return summarizeResults(aggregatedResult, result);
             });
         }
-
-        return playerAggregatedResult.values().stream().sorted().toList();
+        return playerAggregatedResult.values().stream()
+                .filter(aggregatedResult -> aggregatedResult.getTotalPrize().compareTo(BigDecimal.ZERO) > 0)
+                .sorted()
+                .toList();
     }
 
     private AggregatedResult summarizeResults(AggregatedResult aggregatedResult, Result result) {
@@ -64,6 +68,11 @@ public class AggregateServiceImpl implements AggregateService {
     @Override
     public List<AggregatedResult> getResults(LocalDate from, LocalDate to, Stake stake) {
         return aggregate(resultService.get(from, to, stake));
+    }
+
+    @Override
+    public List<PlaceAndPoints> getAveragePoints(LocalDate from, LocalDate to, Stake stake) {
+        return resultService.getAverages(from, to, stake);
     }
 
 }

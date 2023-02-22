@@ -1,6 +1,7 @@
 package com.rebuy.service.controller;
 
 import com.rebuy.service.dto.api.AggregatedResult;
+import com.rebuy.service.dto.api.PlaceAndPoints;
 import com.rebuy.service.dto.api.response.ResultResponse;
 import com.rebuy.service.entity.Stake;
 import com.rebuy.service.service.interfaces.AggregateService;
@@ -38,19 +39,31 @@ public class ResultController implements BaseController {
 
     @GetMapping("/aggregated")
     @Operation(summary = "get results by date from start to end if passed or current date if not, by stake or all stakes")
-    @Parameter(example = "start(yyyy-MM-dd): 2022-09-05, end : 2022-09-05")
-    public List<AggregatedResult> getResults(
-            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate start,
-            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate end,
+    @Parameter(example = "from(yyyy-MM-dd): 2022-09-05, to : 2022-09-05")
+    public List<AggregatedResult> getResultsByStake(
+            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate from,
+            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate to,
             @RequestParam(required = false) Stake stake) {
 
-        return aggregateService.getResults(start, end, stake);
+        return aggregateService.getResults(from, to, stake);
+    }
+
+    @GetMapping("/averages")
+    @Operation(summary = "get results by date from start to end if passed or current date if not, by stake or all stakes")
+    @Parameter(example = "from(yyyy-MM-dd): 2022-09-05, to : 2022-09-05")
+    public List<PlaceAndPoints> getAveragePoints(
+            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate from,
+            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate to,
+            @RequestParam() Stake stake) {
+
+        return aggregateService.getAveragePoints(from, to, stake);
     }
 
     @GetMapping("/current")
     public List<ResultResponse> getCurrentDataByStake(@RequestParam() Stake stake) {
         log.info("request to /current with stake {}", stake.name());
         LocalDate currentDate = ZonedLocalDateSupplier.localDateNowGMTMinus8();
+
         return clientService.getResults(currentDate, stake);
     }
 

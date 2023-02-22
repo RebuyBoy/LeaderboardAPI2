@@ -1,6 +1,7 @@
 package com.rebuy.service.service;
 
 import com.rebuy.service.dto.api.DateAndCount;
+import com.rebuy.service.dto.api.PlaceAndPoints;
 import com.rebuy.service.entity.DateLB;
 import com.rebuy.service.entity.Player;
 import com.rebuy.service.entity.Result;
@@ -12,6 +13,7 @@ import com.rebuy.service.service.interfaces.ResultService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -34,16 +36,25 @@ public class ResultServiceImpl implements ResultService {
 
     @Override
     public List<Result> get(LocalDate from, LocalDate to, Stake stake) {
-        return resultRepository.getResults(from, to, stake);
+        return resultRepository.getAll()
+                .stream()
+                .filter(result -> filterResult(result, from, to, stake))
+                .toList();
+    }
+
+    private boolean filterResult(Result result, LocalDate from, LocalDate to, Stake stake) {
+        return (from == null || !result.getDateLB().getDate().isBefore(from)) &&
+                (to == null || !result.getDateLB().getDate().isAfter(to)) &&
+                (stake == null || result.getStake().equals(stake));
     }
 
     @Override
     public Result saveIfNotExists(Result result) {
         Player player = getPlayer(result.getPlayer());
-        DateLB date = getDateLB(result.getDate());
+        DateLB date = getDateLB(result.getDateLB());
 
         result.setPlayer(player);
-        result.setDate(date);
+        result.setDateLB(date);
 
         return saveResult(result);
     }
@@ -57,6 +68,11 @@ public class ResultServiceImpl implements ResultService {
     @Override
     public List<DateAndCount> getResultNumber() {
         return resultRepository.getGroupedByDateCountAndPrizeSum();
+    }
+
+    @Override
+    public List<PlaceAndPoints> getAverages(LocalDate from, LocalDate to, Stake stake) {
+        return resultRepository.getAveragePoints(from, to, stake, PageRequest.of(0, 3));
     }
 
     private Result saveResult(Result result) {
