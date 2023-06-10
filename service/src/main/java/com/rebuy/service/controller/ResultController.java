@@ -49,7 +49,7 @@ public class ResultController implements BaseController {
     }
 
     @GetMapping("/averages")
-    @Operation(summary = "get results by date from start to end if passed or current date if not, by stake or all stakes")
+    @Operation(summary = "returns average points for first 3 ranks ")
     @Parameter(example = "from(yyyy-MM-dd): 2022-09-05, to : 2022-09-05")
     public List<PlaceAndPoints> getAveragePoints(
             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate from,

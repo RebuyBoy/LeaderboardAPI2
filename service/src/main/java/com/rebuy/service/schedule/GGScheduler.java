@@ -20,7 +20,7 @@ import static com.rebuy.service.constants.Constants.GMT_MINUS_8;
 @EnableScheduling
 public class GGScheduler {
     public static final String START_OF_NEW_DAY = "0 5 0 * * *";
-    public static final String END_OF_DAY = "0 0 23 * * *";
+    public static final String END_OF_DAY = "0 0 12 * * *";
     public static final String EVICT_CACHE_TIME = "0 10 0 * * *";
     private static final Logger LOG = LoggerFactory.getLogger(GGScheduler.class);
     private final ClientService clientService;

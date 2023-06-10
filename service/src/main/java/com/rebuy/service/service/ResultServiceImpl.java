@@ -67,6 +67,7 @@ public class ResultServiceImpl implements ResultService {
 
     @Override
     public List<DateAndCount> getResultNumber() {
+        //TODO filter all instead
         return resultRepository.getGroupedByDateCountAndPrizeSum();
     }
 

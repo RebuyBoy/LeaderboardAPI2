@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.rebuy</groupId>
     <artifactId>service</artifactId>
-    <version>0.0.1</version>
+    <version>0.0.6</version>
     <name>service</name>
     <description>service</description>
     <properties>
@@ -77,6 +77,14 @@
                 </configuration>
             </plugin>
         </plugins>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <excludes>
+                    <exclude>application-dev.yml</exclude>
+                </excludes>
+            </resource>
+        </resources>
     </build>
 
 </project>

@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://leaderboardDB/LeaderboardDB
+    url: jdbc:postgresql://leaderboard_db/LeaderboardDB
     username: postgres
     password: postgres
   liquibase.change-log: classpath:/db/changelog/master.xml
